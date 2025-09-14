@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krushaksathi - Smart Agriculture Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-seedling"></i>
+                <span>Krushaksathi</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pest-management">Pest Management</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>AI-Powered Crop Yield Prediction & Optimization</h1>
+                <p>Empowering farmers with data-driven insights to optimize irrigation, fertilization, and pest control for maximum productivity.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
+                    <button class="btn btn-secondary">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-placeholder">
+                    <i class="fas fa-leaf"></i>
+                    <p>Smart Agriculture Technology</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prediction Form Modal -->
+        <div id="predictionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Crop Yield Prediction</h2>
+                    <span class="close-btn" id="closeModal">&times;</span>
+                </div>
+                <form id="predictionForm" class="prediction-form">
+                    <!-- Location Input Only -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> Location Input</h3>
+                        <p class="form-description">Enter your location and we'll automatically fetch all agricultural data including soil conditions, climate, and regional farming information.</p>
+                        
+                        <div class="form-group">
+                            <label for="location">
+                                <i class="fas fa-map-marker-alt"></i>Your Farm Location
+                                <span id="locationStatus" class="location-status"></span>
+                            </label>
+                            <div class="location-input-container">
+                                <input type="text" id="locationInput" name="location" placeholder="Enter your city, village, or coordinates..." required>
+                                <button type="button" id="getCurrentLocation" class="location-btn">
+                                    <i class="fas fa-crosshairs"></i>
+                                    Use Current Location
+                                </button>
+                            </div>
+                            <div id="locationSuggestions" class="location-suggestions"></div>
+                            <small>We'll automatically detect soil type, climate conditions, and regional farming data</small>
+                        </div>
+                        
+                        <!-- Auto-fetched data display -->
+                        <div id="fetchedData" class="fetched-data" style="display: none;">
+                            <h4><i class="fas fa-database"></i> Auto-Detected Agricultural Data</h4>
+                            <div id="dataDisplay" class="data-grid">
+                                <!-- Data will be populated automatically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optional Target Crop Selection -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-seedling"></i> Crop Selection (Optional)</h3>
+                        <p class="form-description">Select a specific crop for prediction, or leave blank for general recommendations.</p>
+                        
+                        <div class="form-group">
+                            <label for="targetCrop">Target Crop (Optional)</label>
+                            <select id="targetCrop" name="targetCrop">
+                                <option value="">Auto-recommend best crops for your area</option>
+                                <optgroup label="Cereals">
+                                    <option value="rice">Rice</option>
+                                    <option value="wheat">Wheat</option>
+                                    <option value="maize">Maize</option>
+                                    <option value="barley">Barley</option>
+                                    <option value="millet">Millet</option>
+                                </optgroup>
+                                <optgroup label="Pulses">
+                                    <option value="chickpea">Chickpea</option>
+                                    <option value="lentil">Lentil</option>
+                                    <option value="pigeon_pea">Pigeon Pea</option>
+                                    <option value="black_gram">Black Gram</option>
+                                </optgroup>
+                                <optgroup label="Cash Crops">
+                                    <option value="cotton">Cotton</option>
+                                    <option value="sugarcane">Sugarcane</option>
+                                    <option value="tobacco">Tobacco</option>
+                                </optgroup>
+                                <optgroup label="Oilseeds">
+                                    <option value="groundnut">Groundnut</option>
+                                    <option value="mustard">Mustard</option>
+                                    <option value="sunflower">Sunflower</option>
+                                    <option value="soybean">Soybean</option>
+                                </optgroup>
+                                <optgroup label="Vegetables">
+                                    <option value="tomato">Tomato</option>
+                                    <option value="potato">Potato</option>
+                                    <option value="onion">Onion</option>
+                                    <option value="cabbage">Cabbage</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-brain"></i> Get Suggestions
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+                
+                <div id="predictionResult" class="prediction-result" style="display: none;">
+                    <div class="result-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Prediction Results</h3>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-item">
+                            <span class="result-label">Recommended Crops:</span>
+                            <span class="result-value" id="recommendedCrops"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Expected Yield:</span>
+                            <span class="result-value" id="expectedYield"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Best Planting Season:</span>
+                            <span class="result-value" id="plantingSeason"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Irrigation Recommendation:</span>
+                            <span class="result-value" id="irrigationRec"></span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="newPredictionBtn">New Prediction</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Powerful Features for Modern Agriculture</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Yield Prediction</h3>
+                    <p>Advanced AI algorithms analyze historical data, weather patterns, and soil health to predict crop yields with high accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3>Smart Irrigation</h3>
+                    <p>Optimize water usage with intelligent irrigation recommendations based on soil moisture, weather forecasts, and crop requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>Fertilization Guidance</h3>
+                    <p>Get precise fertilizer recommendations tailored to your soil composition and crop nutritional needs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <h3>Pest Control</h3>
+                    <p>Early detection and prevention strategies for pest and disease management using AI-powered monitoring.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Multi-Language Support</h3>
+                    <p>Regional language support for accessibility across different farming communities in India.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile & Web App</h3>
+                    <p>Access your farm data and recommendations anywhere with our responsive web and mobile applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pest Management Section -->
+    <section id="pest-management" class="pest-management">
+        <div class="container">
+            <h2>Common Pests & Treatment</h2>
+            <p>Identify and manage agricultural pests with recommended pesticide solutions</p>
+            
+            <div class="pest-grid">
+                <!-- Pest 1: Aphids -->
+                <div class="pest-card">
+                    <div class="pest-image">
+                        <img src="./images/iamge 1.jpg" alt="Aphids on plant leaves" loading="lazy">
+                    </div>
+                    <div class="pest-info">
+                        <h3>Aphids</h3>
+                        <p class="scientific-name">(Sitobion avenae)</p>
+                        <div class="pest-details">
+                            <div class="pest-label">
+                                <i class="fas fa-bug"></i>
+                                <span>Common Pest</span>
+                            </div>
+                            <div class="pesticide-info">
+                                <h4>Recommended Pesticides:</h4>
+                                <ul>
+                                    <li><strong>Dimethoate</strong> - Systemic insecticide</li>
+                                    <li><strong>Imidacloprid</strong> - Neonicotinoid insecticide</li>
+                                </ul>
+                            </div>
+                            <div class="treatment-tips">
+                                <small><i class="fas fa-info-circle"></i> Apply during early morning or evening for best results</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pest 2: Pink Bollworm -->
+                <div class="pest-card">
+                    <div class="pest-image">
+                        <img src="./images/image 2.jpg" alt="Pink bollworm damage on cotton" loading="lazy">
+                    </div>
+                    <div class="pest-info">
+                        <h3>Pink Bollworm</h3>
+                        <p class="scientific-name">(Pectinophora gossypiella)</p>
+                        <div class="pest-details">
+                            <div class="pest-label">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Major Cotton Pest</span>
+                            </div>
+                            <div class="pesticide-info">
+                                <h4>Recommended Pesticides:</h4>
+                                <ul>
+                                    <li><strong>Chlorantraniliprole</strong> - Selective insecticide</li>
+                                    <li><strong>Cypermethrin</strong> - Pyrethroid insecticide</li>
+                                    <li><strong>Emamectin benzoate</strong> - Biological insecticide</li>
+                                </ul>
+                            </div>
+                            <div class="treatment-tips">
+                                <small><i class="fas fa-info-circle"></i> Monitor cotton bolls regularly during flowering stage</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pest 3: Early Shoot Borer -->
+                <div class="pest-card">
+                    <div class="pest-image">
+                        <img src="./images/image 3.jpg" alt="Sugarcane shoot borer damage" loading="lazy">
+                    </div>
+                    <div class="pest-info">
+                        <h3>Early Shoot Borer</h3>
+                        <p class="scientific-name">(Chilo infuscatellus)</p>
+                        <div class="pest-details">
+                            <div class="pest-label">
+                                <i class="fas fa-seedling"></i>
+                                <span>Sugarcane Pest</span>
+                            </div>
+                            <div class="pesticide-info">
+                                <h4>Recommended Pesticides:</h4>
+                                <ul>
+                                    <li><strong>Chlorpyrifos</strong> - Organophosphate insecticide</li>
+                                    <li><strong>Carbofuran</strong> - Systemic insecticide</li>
+                                </ul>
+                            </div>
+                            <div class="treatment-tips">
+                                <small><i class="fas fa-info-circle"></i> Best applied at early crop stage (2-3 months)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pest-warning">
+                <div class="warning-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h4>Important Safety Notice</h4>
+                        <p>Always follow manufacturer guidelines for pesticide application. Use appropriate protective equipment and maintain recommended waiting periods before harvest.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@cropyieldai.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+91 12345 67890</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Smart India Hackathon 2025</span>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-seedling"></i>
+                    <span>CropYield AI</span>
+                </div>
+                <p>&copy; 2025 CropYield AI. Built for Smart India Hackathon. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
